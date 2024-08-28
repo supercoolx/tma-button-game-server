@@ -15,7 +15,7 @@ const login = async (req, res) => {
   // const username = "button_dev";
   const name = "Test Name";
   const password = "123qwe!@#";
-  const email = "test@test.com";
+  // const email = "test@test.com";
 
   if (!username || !password) {
     throw new CustomError.BadRequestError('Please provide username and password');
@@ -32,7 +32,7 @@ const login = async (req, res) => {
     user = await User.create({
       name,
       username,
-      email,
+      // email,
       password,
       role,
       verificationToken,
