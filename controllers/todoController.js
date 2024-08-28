@@ -44,13 +44,15 @@ const createTodo = async (req, res) => {
   history.heart = isJackpot > 0 ? 0 : (getProbability(0.5) ? 1 : 0);
 
   await history.save();
-  res.status(StatusCodes.CREATED).json({
+  const objRes = {
     _id: isReset ? "" : history._id,
     score: history.score,
     max_score: user.score > history.score ? user.score : history.score,
     jackpot: isJackpot,
     heart : history.heart,
-  });
+  }
+  console.log(objRes);
+  res.status(StatusCodes.CREATED).json(objRes);
 };
 
 module.exports = {
