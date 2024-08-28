@@ -38,10 +38,10 @@ const createTodo = async (req, res) => {
   }
   var isJackpot = 0;
   if(history.heart > 0) {
-    isJackpot = getProbability(0.01) ? 1 : 0;
+    isJackpot = getProbability(0.5) ? 1 : 0;
     console.log("jackpot=", isJackpot);
   }
-  history.heart = isJackpot > 0 ? 0 : (getProbability(0.01) ? 1 : 0);
+  history.heart = isJackpot > 0 ? 0 : (getProbability(0.5) ? 1 : 0);
 
   await history.save();
   res.status(StatusCodes.CREATED).json({
