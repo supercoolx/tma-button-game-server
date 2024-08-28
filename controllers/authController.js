@@ -9,10 +9,10 @@ const {
 const crypto = require('crypto');
 
 const login = async (req, res) => {
-  // const { username } = req.body;
+  const { username } = req.body;
 
   // const { username, name, password } = req.body;
-  const username = "button_dev";
+  // const username = "button_dev";
   const name = "Test Name";
   const password = "123qwe!@#";
   const email = "test@test.com";

@@ -12,8 +12,8 @@ const {
 
 router
   .route('/')
-  .post([authenticateUser], createTodo)
-  // .post(createTodo)
+  // .post([authenticateUser], createTodo)
+  .post(createTodo)
   .get(getAllTodos);
 
 module.exports = router;

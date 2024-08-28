@@ -13,11 +13,14 @@ const getProbability = (p) => {
 }
 
 const createTodo = async (req, res) => {
-//   req.body.user = req.user.userId;
+  
+  const { userid } = req.body;
+
   var history = req.body.id == "" ? null : await History.findOne({_id: req.body.id});
+
   if(!history) {
     history = await new History({
-      user: req.user.userId,
+      user: userid, //req.user.userId,
       score: 0,
       last_score: 0,
       heart: 0,
