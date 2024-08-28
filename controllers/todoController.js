@@ -47,7 +47,7 @@ const createTodo = async (req, res) => {
   res.status(StatusCodes.CREATED).json({
     _id: isReset ? "" : history._id,
     score: history.score,
-    max_score: user.score,
+    max_score: user.score > history.score ? user.score : history.score,
     jackpot: isJackpot,
     heart : history.heart,
   });
