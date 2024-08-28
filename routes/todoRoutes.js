@@ -12,7 +12,8 @@ const {
 
 router
   .route('/')
-  .post([authenticateUser, authorizePermissions('admin')], createTodo)
+  .post([authenticateUser], createTodo)
+  // .post(createTodo)
   .get(getAllTodos);
 
 module.exports = router;

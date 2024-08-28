@@ -1,11 +1,9 @@
-const Todo = require('../models/Todo');
 const History = require('../models/History');
 const User = require('../models/User');
 const { StatusCodes } = require('http-status-codes');
-const mongoose = require('mongoose');
 
 const getAllTodos = async (req, res) => {
-    const todos = await Todo.find({});
+    const todos = await User.find({}).sort({ score: -1 });
     res.status(StatusCodes.OK).json(todos);
 };
 
@@ -13,6 +11,7 @@ const getProbability = (p) => {
   console.log("probability=", p);
   return Math.random() < p;
 }
+
 const createTodo = async (req, res) => {
 //   req.body.user = req.user.userId;
   var history = req.body.id == "" ? null : await History.findOne({_id: req.body.id});
