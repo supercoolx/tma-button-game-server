@@ -36,12 +36,12 @@ const createTodo = async (req, res) => {
     user.score = history.last_score > user.score ? history.last_score : user.score;
     await user.save();
   }
+  
+  history.heart = getProbability(0.5) ? 1 : 0;
   var isJackpot = 0;
   if(history.heart > 0) {
     isJackpot = getProbability(0.5) ? 1 : 0;
-    console.log("jackpot=", isJackpot);
   }
-  history.heart = isJackpot > 0 ? 0 : (getProbability(0.5) ? 1 : 0);
 
   await history.save();
   const objRes = {
