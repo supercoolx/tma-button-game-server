@@ -57,10 +57,16 @@ const createTodo = async (req, res) => {
     await user.save();
   }
   
-  history.heart = getProbability(0.5) ? 1 : 0;
+  var nProbability = 0.5;
+  console.log("bonus time ", user.bonus_time, ", ", new Date());
+  if(user.bonus_time > new Date()) {
+    nProbability *= 2;
+  }
+  console.log("probability=", nProbability);
+  history.heart = getProbability(nProbability) ? 1 : 0;
   var isJackpot = 0;
   if(history.heart > 0) {
-    isJackpot = getProbability(0.5) ? 1 : 0;
+    isJackpot = getProbability(nProbability) ? 1 : 0;
   }
   if(isJackpot > 0) {
     user.jackpot += 10;
