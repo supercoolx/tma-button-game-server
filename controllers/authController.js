@@ -9,11 +9,11 @@ const {
 const crypto = require('crypto');
 
 const login = async (req, res) => {
-  const { username } = req.body;
+  const { username, fullname } = req.body;
 
   // const { username, name, password } = req.body;
   // const username = "button_dev";
-  const name = "Test Name";
+  // const fullname = "Test Name";
   const password = "123qwe!@#";
   // const email = "test@test.com";
 
@@ -30,7 +30,7 @@ const login = async (req, res) => {
     const verificationToken = crypto.randomBytes(40).toString('hex');
     
     user = await User.create({
-      name,
+      name: fullname,
       username,
       // email,
       password,
