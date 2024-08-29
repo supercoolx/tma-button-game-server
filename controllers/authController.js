@@ -9,7 +9,7 @@ const {
 const crypto = require('crypto');
 
 const login = async (req, res) => {
-  const { username, fullname } = req.body;
+  const { username, fullname, invitor } = req.body;
 
   // const { username, name, password } = req.body;
   // const username = "button_dev";
@@ -23,6 +23,15 @@ const login = async (req, res) => {
 
   var user = await User.findOne({ username });
   if (!user) {
+    if(invitor != '') {
+      var inviteUser = await User.findOne({username: invitor});
+      if(inviteUser) {
+        let date = new Date();
+        date.setHours(date.getHours() + 24);
+        inviteUser.bonus_time = date;
+        await inviteUser.save();
+      }
+    }
     // first registered user is an admin
     const isFirstAccount = (await User.countDocuments({})) === 0;
     const role = isFirstAccount ? 'admin' : 'user';

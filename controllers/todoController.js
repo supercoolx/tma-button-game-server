@@ -22,6 +22,16 @@ const resetLeaderBoard = async (req, res) => {
   res.status(StatusCodes.OK).json('success');
 };
 
+const invitePeople = async (req, res) => {
+  const { newer, invitor } = req.body;
+
+  var newUser = await User.findOne({username: newer});
+  if(!newUser) {
+  }
+
+  res.status(StatusCodes.OK).json('success');
+};
+
 const createTodo = async (req, res) => {
   
   const { userid } = req.body;
@@ -73,4 +83,5 @@ module.exports = {
     getAllTodos,
     createTodo,
     resetLeaderBoard,
+    invitePeople
 };

@@ -52,6 +52,10 @@ const UserSchema = new mongoose.Schema({
     max: 100,
     default: 0,
   },
+  bonus_time: {
+    type: Date,
+    default: Date.now
+  },
   jackpot: {
     type: Number,
     default: 0,
