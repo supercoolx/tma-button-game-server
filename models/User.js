@@ -52,6 +52,10 @@ const UserSchema = new mongoose.Schema({
     max: 100,
     default: 0,
   },
+  jackpot: {
+    type: Number,
+    default: 0,
+  },
 });
 
 UserSchema.pre('save', async function () {

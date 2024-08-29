@@ -8,6 +8,7 @@ const {
 const {
   createTodo,
   getAllTodos,
+  resetLeaderBoard,
 } = require('../controllers/todoController');
 
 router
@@ -15,5 +16,8 @@ router
   // .post([authenticateUser], createTodo)
   .post(createTodo)
   .get(getAllTodos);
+
+// router.route('/reset').post(authenticateUser, resetLeaderBoard);
+router.route('/reset').post(resetLeaderBoard);
 
 module.exports = router;

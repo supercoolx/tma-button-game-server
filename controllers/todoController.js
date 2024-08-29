@@ -12,6 +12,16 @@ const getProbability = (p) => {
   return Math.random() < p;
 }
 
+const resetLeaderBoard = async (req, res) => {
+  const { username } = req.body;
+  var user = await User.findOne({username: username});
+  if(user && user.role == 'admin') {
+    await History.deleteMany({});
+  }
+
+  res.status(StatusCodes.OK).json('success');
+};
+
 const createTodo = async (req, res) => {
   
   const { userid } = req.body;
@@ -42,6 +52,10 @@ const createTodo = async (req, res) => {
   if(history.heart > 0) {
     isJackpot = getProbability(0.5) ? 1 : 0;
   }
+  if(isJackpot > 0) {
+    user.jackpot += 10;
+    await user.save();
+  }
 
   await history.save();
   const objRes = {
@@ -58,4 +72,5 @@ const createTodo = async (req, res) => {
 module.exports = {
     getAllTodos,
     createTodo,
+    resetLeaderBoard,
 };
