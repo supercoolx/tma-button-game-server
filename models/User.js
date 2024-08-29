@@ -16,14 +16,10 @@ const UserSchema = new mongoose.Schema({
     minlength: 3,
     maxlength: 50,
   },
-  // email: {
-  //   type: String,
-  //   required: [true, 'Please provide email'],
-  //   validate: {
-  //     validator: validator.isEmail,
-  //     message: 'Please provide valid email',
-  //   },
-  // },
+  email: {
+    type: String,
+    default: '',
+  },
   password: {
     type: String,
     required: [true, 'Please provide password'],

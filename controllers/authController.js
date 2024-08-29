@@ -41,7 +41,6 @@ const login = async (req, res) => {
     user = await User.create({
       name: fullname,
       username,
-      // email,
       password,
       role,
       verificationToken,
