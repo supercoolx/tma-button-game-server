@@ -80,7 +80,7 @@ const createTodo = async (req, res) => {
     await user.save();
   }
   
-  var nProbability = 0.01;
+  var nProbability = 0.5;
   console.log("bonus time ", user.bonus_time, ", ", new Date());
   if(user.bonus_time > new Date()) {
     nProbability *= 2;
