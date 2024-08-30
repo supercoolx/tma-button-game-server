@@ -10,6 +10,7 @@ const crypto = require('crypto');
 
 const login = async (req, res) => {
   const { username, fullname, invitor } = req.body;
+  console.log("login=", username, ", ", fullname, ", ", invitor);
 
   // const { username, name, password } = req.body;
   // const username = "button_dev";
@@ -26,6 +27,7 @@ const login = async (req, res) => {
     if(invitor != '') {
       var inviteUser = await User.findOne({username: invitor});
       if(inviteUser) {
+        console.log("bounus time addes");
         let date = new Date();
         date.setHours(date.getHours() + 24);
         inviteUser.bonus_time = date;
