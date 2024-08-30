@@ -55,6 +55,22 @@ const followX = async (req, res) => {
   res.status(StatusCodes.OK).json('success');
 };
 
+const getBoostTime = async (req, res) => {
+  const { username } = req.body;
+  console.log("boost user=", username);
+  var user = await User.findOne({username});
+  var btime = 0;
+  if(user) {
+    const bonus_time = user.bonus_time;
+    const current = new Date();
+    if(bonus_time > current) {
+      btime = bonus_time.getTime() - current.getTime();
+    }
+  }
+  console.log("boost time=", btime);
+  res.status(StatusCodes.OK).json({bonus_time: btime});
+};
+
 const createTodo = async (req, res) => {
   
   const { userid } = req.body;
@@ -115,4 +131,5 @@ module.exports = {
     invitePeople,
     joinTelegram,
     followX,
+    getBoostTime,
 };

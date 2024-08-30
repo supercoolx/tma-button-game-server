@@ -12,6 +12,7 @@ const {
   invitePeople,
   joinTelegram,
   followX,
+  getBoostTime,
 } = require('../controllers/todoController');
 
 router
@@ -26,5 +27,6 @@ router.route('/reset').post(resetLeaderBoard);
 router.route('/invite').post(invitePeople);
 router.route('/jointg').post(joinTelegram);
 router.route('/followx').post(followX);
+router.route('/getboost').post(getBoostTime);
 
 module.exports = router;
