@@ -28,12 +28,12 @@ const login = async (req, res) => {
       var inviteUser = await User.findOne({username: invitor});
       if(inviteUser) {
         console.log("bounus time addes");
-        const bonus_time = inviteUser.bonus_time;
+        var newBonus = inviteUser.bonus_time;
         let date = new Date();
-        if(bonus_time < date) {
-          bonus_time = date;
+        if(newBonus < date) {
+          newBonus = date;
         }
-        const newTimestamp = new Date(bonus_time.getTime() + (24 * 60 * 60 * 1000));
+        const newTimestamp = new Date(newBonus.getTime() + (24 * 60 * 60 * 1000));
         console.log("new bonus time=", newTimestamp);
         inviteUser.bonus_time = newTimestamp;
         await inviteUser.save();
