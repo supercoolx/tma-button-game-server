@@ -10,6 +10,8 @@ const {
   getAllTodos,
   resetLeaderBoard,
   invitePeople,
+  joinTelegram,
+  followX,
 } = require('../controllers/todoController');
 
 router
@@ -22,5 +24,7 @@ router
 router.route('/reset').post(resetLeaderBoard);
 
 router.route('/invite').post(invitePeople);
+router.route('/jointg').post(joinTelegram);
+router.route('/followx').post(followX);
 
 module.exports = router;

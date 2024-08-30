@@ -56,6 +56,14 @@ const UserSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  jointg: {
+    type: Number,
+    default: 0,
+  },
+  followx: {
+    type: Number,
+    default: 0,
+  },
 });
 
 UserSchema.pre('save', async function () {

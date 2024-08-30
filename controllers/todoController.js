@@ -32,6 +32,27 @@ const invitePeople = async (req, res) => {
   res.status(StatusCodes.OK).json('success');
 };
 
+const joinTelegram = async (req, res) => {
+  const { username } = req.body;
+
+  var user = await User.findOne({username});
+  if(user && user.jointg != 1) {
+    user.jointg = 1;
+  }
+
+  res.status(StatusCodes.OK).json('success');
+};
+const followX = async (req, res) => {
+  const { username } = req.body;
+
+  var user = await User.findOne({username});
+  if(user && user.followx != 1) {
+    user.followx = 1;
+  }
+
+  res.status(StatusCodes.OK).json('success');
+};
+
 const createTodo = async (req, res) => {
   
   const { userid } = req.body;
@@ -57,7 +78,7 @@ const createTodo = async (req, res) => {
     await user.save();
   }
   
-  var nProbability = 0.5;
+  var nProbability = 0.01;
   console.log("bonus time ", user.bonus_time, ", ", new Date());
   if(user.bonus_time > new Date()) {
     nProbability *= 2;
@@ -89,5 +110,7 @@ module.exports = {
     getAllTodos,
     createTodo,
     resetLeaderBoard,
-    invitePeople
+    invitePeople,
+    joinTelegram,
+    followX,
 };
