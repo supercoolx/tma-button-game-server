@@ -34,20 +34,22 @@ const invitePeople = async (req, res) => {
 
 const joinTelegram = async (req, res) => {
   const { username } = req.body;
-
+  console.log("join tg=", username);
   var user = await User.findOne({username});
   if(user && user.jointg != 1) {
     user.jointg = 1;
+    await user.save();
   }
 
   res.status(StatusCodes.OK).json('success');
 };
 const followX = async (req, res) => {
   const { username } = req.body;
-
+  console.log("follow x=", username);
   var user = await User.findOne({username});
   if(user && user.followx != 1) {
     user.followx = 1;
+    await user.save();
   }
 
   res.status(StatusCodes.OK).json('success');
