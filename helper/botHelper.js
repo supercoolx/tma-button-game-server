@@ -3,7 +3,7 @@ const TelegramBot = require('node-telegram-bot-api');
 
 const bot = new TelegramBot(process.env.BOT_TOKEN);
 
-module.exports.isUserJoined = (userId, channelId = '-1002154994416') => bot.getChatMember(channelId, 7449972885)
+module.exports.isUserJoined = (userId, channelId = '-1002154994416') => bot.getChatMember(channelId, userId)
     .then((chatMember) => {
         if (chatMember.status === 'member' || chatMember.status === 'creator' || chatMember.status === 'administrator') {
             console.log(`User#${userId} is a ${chatMember.status} of the channel.`,);
@@ -15,6 +15,6 @@ module.exports.isUserJoined = (userId, channelId = '-1002154994416') => bot.getC
     })
     .catch((error) => {
         // Handle errors, such as the bot not being an administrator in the channel
-        console.error(error.message);
+        console.error('Telegram Bot Api Error:', error.message);
         return false;
     });
