@@ -1,6 +1,7 @@
 const History = require('../models/History');
 const User = require('../models/User');
 const { StatusCodes } = require('http-status-codes');
+const { isUserJoined } = require('../helper/botHelper');
 
 const getAllTodos = async (req, res) => {
     const todos = await User.find({}).sort({ score: -1 });
@@ -32,16 +33,44 @@ const invitePeople = async (req, res) => {
   res.status(StatusCodes.OK).json('success');
 };
 
+const checkTgJoined = async (req, res) => {
+  const { username } = req.query;
+  const isJoined = await isUserJoined(Number(username));
+  return (isJoined ? 
+    res.status(StatusCodes.OK).json({ success: true }) : 
+    res.status(StatusCodes.OK).json({
+      success: false,
+      message: 'You didn\'t join our channel'
+    })
+  );
+}
+
 const joinTelegram = async (req, res) => {
   const { username } = req.body;
   console.log("join tg=", username);
   var user = await User.findOne({username});
-  if(user && user.jointg != 1) {
+  if (!user) return res.status(StatusCodes.UNAUTHORIZED).json('user not found');
+
+  if(user.jointg) return res.status(StatusCodes.OK).json('You\'ve already got bonus.');
+  
+  else  {
+    const isJoined = await isUserJoined(username);
+    if (!isJoined) return res.status(StatusCodes.UNAUTHORIZED).json('user didn\'t join our channel');
+
+    console.log("bounus time addes");
+    var newBonus = user.bonus_time;
+    let date = new Date();
+    if(newBonus < date) {
+      newBonus = date;
+    }
+    const newTimestamp = new Date(newBonus.getTime() + (24 * 60 * 60 * 1000));
+    console.log("new bonus time=", newTimestamp);
+    user.bonus_time = newTimestamp;
     user.jointg = 1;
     await user.save();
   }
 
-  res.status(StatusCodes.OK).json('success');
+  return res.status(StatusCodes.OK).json('success');
 };
 const followX = async (req, res) => {
   const { username } = req.body;
@@ -130,6 +159,7 @@ module.exports = {
     resetLeaderBoard,
     invitePeople,
     joinTelegram,
+    checkTgJoined,
     followX,
     getBoostTime,
 };

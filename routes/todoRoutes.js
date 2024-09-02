@@ -11,6 +11,7 @@ const {
   resetLeaderBoard,
   invitePeople,
   joinTelegram,
+  checkTgJoined,
   followX,
   getBoostTime,
 } = require('../controllers/todoController');
@@ -26,6 +27,7 @@ router.route('/reset').post(resetLeaderBoard);
 
 router.route('/invite').post(invitePeople);
 router.route('/jointg').post(joinTelegram);
+router.route('/checkjointg').get(checkTgJoined);
 router.route('/followx').post(followX);
 router.route('/getboost').post(getBoostTime);
 
