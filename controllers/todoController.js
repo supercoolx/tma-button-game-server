@@ -49,13 +49,22 @@ const joinTelegram = async (req, res) => {
   const { username } = req.body;
   console.log("join tg=", username);
   var user = await User.findOne({username});
-  if (!user) return res.status(StatusCodes.UNAUTHORIZED).json('user not found');
+  if (!user) return res.status(StatusCodes.UNAUTHORIZED).json({
+    success: false,
+    message: 'user not found'
+  });
 
-  if(user.jointg) return res.status(StatusCodes.OK).json('You\'ve already got bonus.');
-  
-  else  {
+  if(user.jointg) {
+    return res.status(StatusCodes.OK).json({
+      success: false,
+      message: 'You\'ve already got bonus.'
+    });
+  } else  {
     const isJoined = await isUserJoined(username);
-    if (!isJoined) return res.status(StatusCodes.UNAUTHORIZED).json('user didn\'t join our channel');
+    if (!isJoined) return res.status(StatusCodes.OK).json({
+      success: false,
+      message: 'user didn\'t join our channel'
+    });
 
     console.log("bounus time addes");
     var newBonus = user.bonus_time;
@@ -70,7 +79,10 @@ const joinTelegram = async (req, res) => {
     await user.save();
   }
 
-  return res.status(StatusCodes.OK).json('success');
+  return res.status(StatusCodes.OK).json({
+    success: true,
+    message: 'success'
+  });
 };
 const followX = async (req, res) => {
   const { username } = req.body;
