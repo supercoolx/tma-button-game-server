@@ -2,8 +2,11 @@ require('dotenv').config();
 const TelegramBot = require('node-telegram-bot-api');
 
 const bot = new TelegramBot(process.env.BOT_TOKEN);
+const CHANNEL_ID = '-1002153654987'; //macro
+// const CHANNEL_ID = '-1002154994416'; //button
 
-module.exports.isUserJoined = (userId, channelId = '-1002154994416') => bot.getChatMember(channelId, userId)
+
+module.exports.isUserJoined = (userId, channelId = CHANNEL_ID) => bot.getChatMember(channelId, userId)
     .then((chatMember) => {
         if (chatMember.status === 'member' || chatMember.status === 'creator' || chatMember.status === 'administrator') {
             console.log(`User#${userId} is a ${chatMember.status} of the channel.`,);
