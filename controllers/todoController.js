@@ -126,6 +126,8 @@ const createTodo = async (req, res) => {
   var user = await User.findOne({_id: history.user});
   if(isReset) {
     history.score = 0;
+    user.score = history.last_score > user.score ? history.last_score : user.score;
+    await user.save();
   }
   
   var nHeartBeatPercent = 0.03, nJackPotPercent = 0.5;
@@ -140,13 +142,10 @@ const createTodo = async (req, res) => {
   }
   if(isJackpot > 0) {
     user.jackpot += 10;
+    await user.save();
   }
-  
-  user.score = history.last_score > user.score ? history.last_score : user.score;
-  await user.save();
-  
-  await history.save();
 
+  await history.save();
   const objRes = {
     _id: isReset ? "" : history._id,
     score: history.score,
