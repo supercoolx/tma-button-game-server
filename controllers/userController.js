@@ -8,13 +8,11 @@ const {
 } = require('../utils');
 
 const getAllUsers = async (req, res) => {
-  console.log(req.user);
   const users = await User.find({ role: 'user' }).select('-password');
   res.status(StatusCodes.OK).json({ users });
 };
 
 const getSingleUser = async (req, res) => {
-  console.log('req', req.params);
   const user = await User.findOne({ username: req.params.id }).select('-password');
   if (!user) {
     throw new CustomError.NotFoundError(`No user with id : ${req.params.id}`);

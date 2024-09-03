@@ -34,7 +34,6 @@ const login = async (req, res) => {
           newBonus = date;
         }
         const newTimestamp = new Date(newBonus.getTime() + (24 * 60 * 60 * 1000));
-        console.log("new bonus time=", newTimestamp);
         inviteUser.bonus_time = newTimestamp;
         await inviteUser.save();
       }

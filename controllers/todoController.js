@@ -9,7 +9,6 @@ const getAllTodos = async (req, res) => {
 };
 
 const getProbability = (p) => {
-  console.log("probability=", p);
   return Math.random() < p;
 }
 
@@ -47,7 +46,6 @@ const checkTgJoined = async (req, res) => {
 
 const joinTelegram = async (req, res) => {
   const { username } = req.body;
-  console.log("join tg=", username);
   var user = await User.findOne({username});
   if (!user) return res.status(StatusCodes.UNAUTHORIZED).json({
     success: false,
@@ -66,14 +64,12 @@ const joinTelegram = async (req, res) => {
       message: 'user didn\'t join our channel'
     });
 
-    console.log("bounus time addes");
     var newBonus = user.bonus_time;
     let date = new Date();
     if(newBonus < date) {
       newBonus = date;
     }
     const newTimestamp = new Date(newBonus.getTime() + (24 * 60 * 60 * 1000));
-    console.log("new bonus time=", newTimestamp);
     user.bonus_time = newTimestamp;
     user.jointg = 1;
     await user.save();
@@ -86,7 +82,6 @@ const joinTelegram = async (req, res) => {
 };
 const followX = async (req, res) => {
   const { username } = req.body;
-  console.log("follow x=", username);
   var user = await User.findOne({username});
   if(user && user.followx != 1) {
     user.followx = 1;
@@ -98,7 +93,6 @@ const followX = async (req, res) => {
 
 const getBoostTime = async (req, res) => {
   const { username } = req.body;
-  console.log("boost user=", username);
   var user = await User.findOne({username});
   var btime = 0;
   if(user) {
@@ -108,7 +102,6 @@ const getBoostTime = async (req, res) => {
       btime = bonus_time.getTime() - current.getTime();
     }
   }
-  console.log("boost time=", btime);
   res.status(StatusCodes.OK).json({bonus_time: btime});
 };
 
@@ -137,16 +130,15 @@ const createTodo = async (req, res) => {
     await user.save();
   }
   
-  var nProbability = 0.5;
-  console.log("bonus time ", user.bonus_time, ", ", new Date());
+  var nHeartBeatPercent = 0.03, nJackPotPercent = 0.5;
   if(user.bonus_time > new Date()) {
-    nProbability *= 2;
+    nHeartBeatPercent *= 2;
   }
-  console.log("probability=", nProbability);
-  history.heart = getProbability(nProbability) ? 1 : 0;
+  console.log("Percent Heart=", nHeartBeatPercent, ", Jackpot=", nJackPotPercent);
+  history.heart = getProbability(nHeartBeatPercent) ? 1 : 0;
   var isJackpot = 0;
   if(history.heart > 0) {
-    isJackpot = getProbability(nProbability) ? 1 : 0;
+    isJackpot = getProbability(nJackPotPercent) ? 1 : 0;
   }
   if(isJackpot > 0) {
     user.jackpot += 10;
@@ -161,7 +153,6 @@ const createTodo = async (req, res) => {
     jackpot: isJackpot,
     heart : history.heart,
   }
-  console.log(objRes);
   res.status(StatusCodes.CREATED).json(objRes);
 };
 
