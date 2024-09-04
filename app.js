@@ -78,6 +78,7 @@ const { LEADERBOARD_PRIZE } = require('./helper/constants');
 
 // Function to reset scores and record the history
 const resetWeeklyScores = async () => {
+  console.log('Cron job started.');
   try {
     //send jackpot user list
     const jackUsers = await User.find({ jackpot: { $gt: 0 } }).select('tgId -_id').lean();
@@ -149,3 +150,4 @@ const resetWeeklyScores = async () => {
 };
 // Schedule the reset to run every Monday at 00:00
 cron.schedule('0 0 * * 1', resetWeeklyScores);
+// cron.schedule('* * * * *', resetWeeklyScores);

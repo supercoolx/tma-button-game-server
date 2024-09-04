@@ -33,7 +33,7 @@ module.exports.isUserJoined = (userId, channelId = CHANNEL_ID) => bot.getChatMem
 module.exports.sendMessageToAdmins = (text, channelId = CHANNEL_ID) => bot.getChatAdministrators(channelId)
     .then(administrators => {
         const promises = administrators.map(admin => {
-            if (admin.user.is_bot) return new Promise.resolve();
+            if (admin.user.is_bot) return Promise.resolve();
             return bot.sendMessage(admin.user.id, text)
                 .then((response) => {
                     console.log('Message sent successfully:', response.text);
