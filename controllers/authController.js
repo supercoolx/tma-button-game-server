@@ -9,7 +9,7 @@ const {
 const crypto = require('crypto');
 
 const login = async (req, res) => {
-  const { username, fullname, invitor } = req.body;
+  const { username, fullname, invitor, tgId } = req.body;
   console.log("login=", username, ", ", fullname, ", ", invitor);
 
   // const { username, name, password } = req.body;
@@ -46,6 +46,7 @@ const login = async (req, res) => {
     
     user = await User.create({
       name: fullname,
+      tgId,
       username,
       password,
       role,

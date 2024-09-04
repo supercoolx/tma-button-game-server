@@ -3,6 +3,10 @@ const validator = require('validator');
 const bcrypt = require('bcryptjs');
 
 const UserSchema = new mongoose.Schema({
+  tgId: {
+    type: String,
+    default: '',
+  },
   name: {
     type: String,
     required: [true, 'Please provide name'],

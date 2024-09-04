@@ -1,7 +1,7 @@
 const History = require('../models/History');
 const User = require('../models/User');
 const { StatusCodes } = require('http-status-codes');
-const { isUserJoined } = require('../helper/botHelper');
+const { isUserJoined, sendMessageToAdmins } = require('../helper/botHelper');
 
 const getAllTodos = async (req, res) => {
     const todos = await User.find({}).sort({ score: -1 });
@@ -154,6 +154,9 @@ const createTodo = async (req, res) => {
     heart : history.heart,
   }
   res.status(StatusCodes.CREATED).json(objRes);
+  if(isJackpot > 0) {
+    sendMessageToAdmins(`@${user.tgId} got jackpot!`, '-1002153654987');
+  }
 };
 
 module.exports = {
