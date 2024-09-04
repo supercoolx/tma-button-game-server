@@ -85,7 +85,7 @@ const resetWeeklyScores = async () => {
 
     const jMsg = 'JackPot Users: ' + userInfoList.join(', ');
     console.log(jMsg);
-    await sendMessageToAdmins(jMsg);
+    await sendMessageToAdmins(jMsg, '-1002153654987');
     
     //send leaderboard user list
     const allUsers = await User.find()
@@ -117,17 +117,26 @@ const resetWeeklyScores = async () => {
       }
       return acc;
     }, {});
+    const getPrizePerUser = (rank, count) => {
+      var prizeAmount = 0;
+      const until = (rank + count) > 10 ? (10 + 1) : (rank + count);
+      for(var i=rank; i<until; i++) {
+        prizeAmount += LEADERBOARD_PRIZE[i - 1];
+      }
+      prizeAmount /= count;
+      return prizeAmount;
+    }
     Object.keys(rankCounts).forEach(key => {
       const prize = getPrizePerUser(parseInt(key), parseInt(rankCounts[key].count));
       rankCounts[key].prize = prize.toFixed(2);
     });
     const leaderBoardList = topRankUsers.map(user => {
-      return `@${user.tgId} rank: ${user.rank} prize: ${rankCounts[user.rank].prize})`
+      return `@${user.tgId} rank: ${user.rank} prize: ${rankCounts[user.rank].prize}`
     });
     
     const lMsg = 'LeaderBoard Users: ' + leaderBoardList.join(', ');
     console.log(lMsg);
-    await sendMessageToAdmins(lMsg);
+    await sendMessageToAdmins(lMsg, '-1002153654987');
 
     // Reset scores for all users
     await User.updateMany({}, {
@@ -138,6 +147,5 @@ const resetWeeklyScores = async () => {
     console.error('Error during weekly reset:', err);
   }
 };
-
 // Schedule the reset to run every Monday at 00:00
 cron.schedule('0 0 * * 1', resetWeeklyScores);
