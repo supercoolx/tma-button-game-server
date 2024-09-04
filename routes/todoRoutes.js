@@ -9,11 +9,12 @@ const {
   createTodo,
   getAllTodos,
   resetLeaderBoard,
-  invitePeople,
   joinTelegram,
   checkTgJoined,
   followX,
   getBoostTime,
+  getJackPotBoard,
+  getLeaderBoard,
 } = require('../controllers/todoController');
 
 router
@@ -22,13 +23,13 @@ router
   .post(createTodo)
   .get(getAllTodos);
 
-// router.route('/reset').post(authenticateUser, resetLeaderBoard);
 router.route('/reset').post(resetLeaderBoard);
 
-router.route('/invite').post(invitePeople);
 router.route('/jointg').post(joinTelegram);
 router.route('/checkjointg').get(checkTgJoined);
 router.route('/followx').post(followX);
 router.route('/getboost').post(getBoostTime);
+router.route('/getjackboard').post(getJackPotBoard);
+router.route('/getleaderboard').post(getLeaderBoard);
 
 module.exports = router;

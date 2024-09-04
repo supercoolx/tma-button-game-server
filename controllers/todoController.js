@@ -22,16 +22,6 @@ const resetLeaderBoard = async (req, res) => {
   res.status(StatusCodes.OK).json('success');
 };
 
-const invitePeople = async (req, res) => {
-  const { newer, invitor } = req.body;
-
-  var newUser = await User.findOne({username: newer});
-  if(!newUser) {
-  }
-
-  res.status(StatusCodes.OK).json('success');
-};
-
 const checkTgJoined = async (req, res) => {
   const { username } = req.query;
   const isJoined = await isUserJoined(Number(username));
@@ -141,7 +131,7 @@ const createTodo = async (req, res) => {
     isJackpot = getProbability(nJackPotPercent) ? 1 : 0;
   }
   if(isJackpot > 0) {
-    user.jackpot += 10;
+    user.jackpot += 1;
     await user.save();
   }
 
@@ -154,8 +144,75 @@ const createTodo = async (req, res) => {
     heart : history.heart,
   }
   res.status(StatusCodes.CREATED).json(objRes);
-  if(isJackpot > 0) {
-    sendMessageToAdmins(`@${user.tgId} got jackpot!`, '-1002153654987');
+};
+
+const filterUsersByUsername = (usersArray, targetUsername) => {
+  return usersArray.filter(user => user.username === targetUsername);
+}
+const getJackPotBoard = async (req, res) => {
+  const { username } = req.body;
+  const users = await User.find({ score: { $gt: 0 } });
+  const filteredUsers = filterUsersByUsername(users, username);
+  
+  res.status(StatusCodes.OK).json({
+    total: users.length,
+    exist: filteredUsers.length,
+  });
+};
+
+const getLeaderBoard = async (req, res) => {
+  const { username } = req.body;
+  try {
+    // Find all users sorted by score in descending order
+    const allUsers = await User.find()
+        .sort({ score: -1 })
+        .lean(); // Use lean() to get plain JavaScript objects
+
+    // Calculate ranks for all users
+    let rankedUsers = [];
+    let currentRank = 1;
+
+    allUsers.forEach((user, index) => {
+        // If not the first user and the current score equals the previous score, keep the same rank
+        if (index > 0 && allUsers[index].score === allUsers[index - 1].score) {
+            rankedUsers.push({ ...user, rank: currentRank });
+        } else {
+            // Update rank for the current user
+            currentRank = index + 1;
+            rankedUsers.push({ ...user, rank: currentRank });
+        }
+    });
+
+    // Determine the score of the 10th rank
+    const rankThreshold = 10;
+    const rankScoreThreshold = rankedUsers.find(user => user.rank === rankThreshold)?.score;
+
+    // Filter users up to the 10th rank and include all with the same score as the 10th rank
+    const topRankUsers = rankedUsers.filter(user => user.rank <= rankThreshold && user.score >= rankScoreThreshold);
+
+    // Count users per rank within the top ranks
+    const rankCounts = topRankUsers.reduce((acc, user) => {
+        acc[user.rank] = (acc[user.rank] || 0) + 1;
+        return acc;
+    }, {});
+
+    // Find your rank and score
+    const myUser = rankedUsers.find(user => user.username === username);
+    const myRank = myUser ? myUser.rank + 1 : null;
+    const myScore = myUser ? myUser.score : null;
+
+    // Log and return the results
+    console.log('Top Users Count per Rank:', rankCounts);
+    console.log(`Your Rank: ${myRank}, Your Score: ${myScore}`);
+
+    return res.status(StatusCodes.OK).json({
+      rankCounts,
+      myRank,
+      myScore
+    });
+  } catch (err) {
+      console.error('Error fetching users:', err);
+      return res.status(StatusCodes.OK).json('failed');
   }
 };
 
@@ -163,9 +220,10 @@ module.exports = {
     getAllTodos,
     createTodo,
     resetLeaderBoard,
-    invitePeople,
     joinTelegram,
     checkTgJoined,
     followX,
     getBoostTime,
+    getJackPotBoard,
+    getLeaderBoard,
 };

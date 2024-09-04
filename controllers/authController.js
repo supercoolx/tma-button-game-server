@@ -19,7 +19,7 @@ const login = async (req, res) => {
   // const email = "test@test.com";
 
   if (!username || !password) {
-    throw new CustomError.BadRequestError('Please provide username and password');
+    throw new CustomError.BadRequestError('Please provide username');
   }
 
   var user = await User.findOne({ username });
