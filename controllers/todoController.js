@@ -150,7 +150,7 @@ const filterUsersByUsername = (usersArray, targetUsername) => {
   return usersArray.filter(user => user.username === targetUsername);
 }
 const getJackPotBoard = async (req, res) => {
-  const { username } = req.body;
+  const { username } = req.params;
   const users = await User.find({ score: { $gt: 0 } });
   const filteredUsers = filterUsersByUsername(users, username);
   
@@ -161,13 +161,12 @@ const getJackPotBoard = async (req, res) => {
 };
 
 const getLeaderBoard = async (req, res) => {
-  const { username } = req.body;
+  const { username } = req.params;
   try {
     // Find all users sorted by score in descending order
     const allUsers = await User.find()
         .sort({ score: -1 })
         .lean(); // Use lean() to get plain JavaScript objects
-
     // Calculate ranks for all users
     let rankedUsers = [];
     let currentRank = 1;
@@ -185,20 +184,26 @@ const getLeaderBoard = async (req, res) => {
 
     // Determine the score of the 10th rank
     const rankThreshold = 10;
-    const rankScoreThreshold = rankedUsers.find(user => user.rank === rankThreshold)?.score;
+    var rankScoreThreshold = rankedUsers.find(user => user.rank === rankThreshold)?.score;
+    if(!rankScoreThreshold) {
+      rankScoreThreshold = 0;
+    }
 
     // Filter users up to the 10th rank and include all with the same score as the 10th rank
     const topRankUsers = rankedUsers.filter(user => user.rank <= rankThreshold && user.score >= rankScoreThreshold);
-
+    
     // Count users per rank within the top ranks
     const rankCounts = topRankUsers.reduce((acc, user) => {
-        acc[user.rank] = (acc[user.rank] || 0) + 1;
+        acc[user.rank] = {
+          count: (acc[user.rank]?.count || 0) + 1,
+          score: user.score
+        }
         return acc;
     }, {});
 
     // Find your rank and score
-    const myUser = rankedUsers.find(user => user.username === username);
-    const myRank = myUser ? myUser.rank + 1 : null;
+    const myUser = rankedUsers.find(user => user.username == username);
+    const myRank = myUser ? myUser.rank : null;
     const myScore = myUser ? myUser.score : null;
 
     // Log and return the results

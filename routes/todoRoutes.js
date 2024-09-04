@@ -29,7 +29,7 @@ router.route('/jointg').post(joinTelegram);
 router.route('/checkjointg').get(checkTgJoined);
 router.route('/followx').post(followX);
 router.route('/getboost').post(getBoostTime);
-router.route('/getjackboard').post(getJackPotBoard);
-router.route('/getleaderboard').post(getLeaderBoard);
+router.route('/getjackboard/:username').get(getJackPotBoard);
+router.route('/getleaderboard/:username').get(getLeaderBoard);
 
 module.exports = router;
