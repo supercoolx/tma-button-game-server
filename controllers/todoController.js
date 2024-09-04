@@ -203,7 +203,7 @@ const getLeaderBoard = async (req, res) => {
 
     Object.keys(rankCounts).forEach(key => {
       const prize = getPrizePerUser(parseInt(key), parseInt(rankCounts[key].count));
-      rankCounts[key].prize = prize;
+      rankCounts[key].prize = prize.toFixed(2);
     });
 
     // Find your rank and score
