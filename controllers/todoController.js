@@ -201,6 +201,11 @@ const getLeaderBoard = async (req, res) => {
         return acc;
     }, {});
 
+    Object.keys(rankCounts).forEach(key => {
+      const prize = getPrizePerUser(parseInt(key), parseInt(rankCounts[key].count));
+      rankCounts[key].prize = prize;
+    });
+
     // Find your rank and score
     const myUser = rankedUsers.find(user => user.username == username);
     const myRank = myUser ? myUser.rank : null;
@@ -220,6 +225,17 @@ const getLeaderBoard = async (req, res) => {
       return res.status(StatusCodes.OK).json('failed');
   }
 };
+
+const getPrizePerUser = (rank, count) => {
+  const prizeList = [100, 75, 50, 30, 20, 10, 10, 10, 10, 10];
+  var prizeAmount = 0;
+  const until = (rank + count) > 10 ? (10 + 1) : (rank + count);
+  for(var i=rank; i<until; i++) {
+    prizeAmount += prizeList[i - 1];
+  }
+  prizeAmount /= count;
+  return prizeAmount;
+}
 
 module.exports = {
     getAllTodos,
