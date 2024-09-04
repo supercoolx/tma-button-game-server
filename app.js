@@ -86,7 +86,7 @@ const resetWeeklyScores = async () => {
 
     const jMsg = 'JackPot Users: ' + userInfoList.join(', ');
     console.log(jMsg);
-    await sendMessageToAdmins(jMsg, '-1002153654987');
+    await sendMessageToAdmins(jMsg);
     
     //send leaderboard user list
     const allUsers = await User.find()
@@ -137,7 +137,7 @@ const resetWeeklyScores = async () => {
     
     const lMsg = 'LeaderBoard Users: ' + leaderBoardList.join(', ');
     console.log(lMsg);
-    await sendMessageToAdmins(lMsg, '-1002153654987');
+    await sendMessageToAdmins(lMsg);
 
     // Reset scores for all users
     await User.updateMany({}, {
