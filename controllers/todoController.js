@@ -1,26 +1,11 @@
 const History = require('../models/History');
 const User = require('../models/User');
 const { StatusCodes } = require('http-status-codes');
-const { isUserJoined, sendMessageToAdmins } = require('../helper/botHelper');
-
-const getAllTodos = async (req, res) => {
-    const todos = await User.find({}).sort({ score: -1 });
-    res.status(StatusCodes.OK).json(todos);
-};
-
+const { isUserJoined } = require('../helper/botHelper');
+const { LEADERBOARD_PRIZE } = require('../helper/constants');
 const getProbability = (p) => {
   return Math.random() < p;
 }
-
-const resetLeaderBoard = async (req, res) => {
-  const { username } = req.body;
-  var user = await User.findOne({username: username});
-  if(user && user.role == 'admin') {
-    await History.deleteMany({});
-  }
-
-  res.status(StatusCodes.OK).json('success');
-};
 
 const checkTgJoined = async (req, res) => {
   const { username } = req.query;
@@ -151,12 +136,14 @@ const filterUsersByUsername = (usersArray, targetUsername) => {
 }
 const getJackPotBoard = async (req, res) => {
   const { username } = req.params;
-  const users = await User.find({ score: { $gt: 0 } });
+  const users = await User.find({ jackpot: { $gt: 0 } });
   const filteredUsers = filterUsersByUsername(users, username);
+  const remainTime = getRemainingTimeToReset();
   
   res.status(StatusCodes.OK).json({
     total: users.length,
     exist: filteredUsers.length,
+    remainTime,
   });
 };
 
@@ -210,15 +197,18 @@ const getLeaderBoard = async (req, res) => {
     const myUser = rankedUsers.find(user => user.username == username);
     const myRank = myUser ? myUser.rank : null;
     const myScore = myUser ? myUser.score : null;
+    const remainTime = getRemainingTimeToReset();
 
     // Log and return the results
     console.log('Top Users Count per Rank:', rankCounts);
     console.log(`Your Rank: ${myRank}, Your Score: ${myScore}`);
 
+
     return res.status(StatusCodes.OK).json({
       rankCounts,
       myRank,
-      myScore
+      myScore,
+      remainTime,
     });
   } catch (err) {
       console.error('Error fetching users:', err);
@@ -227,20 +217,31 @@ const getLeaderBoard = async (req, res) => {
 };
 
 const getPrizePerUser = (rank, count) => {
-  const prizeList = [100, 75, 50, 30, 20, 10, 10, 10, 10, 10];
   var prizeAmount = 0;
   const until = (rank + count) > 10 ? (10 + 1) : (rank + count);
   for(var i=rank; i<until; i++) {
-    prizeAmount += prizeList[i - 1];
+    prizeAmount += LEADERBOARD_PRIZE[i - 1];
   }
   prizeAmount /= count;
   return prizeAmount;
 }
+const getRemainingTimeToReset = () => {
+  const now = new Date();
+  const dayOfWeek = now.getDay();
+  const daysUntilMonday = (1 - dayOfWeek + 7) % 7; // Days until next Monday
+  const nextMonday = new Date(now);
+  nextMonday.setDate(now.getDate() + daysUntilMonday);
+  nextMonday.setHours(0, 0, 0, 0); // Set time to start of the day
+  
+  const remainingTime = nextMonday - now; // Time in milliseconds
+
+  console.log(`Time remaining until next reset: ${Math.ceil(remainingTime / 1000 / 60 / 60)} hours`);
+  
+  return remainingTime;
+};
 
 module.exports = {
-    getAllTodos,
     createTodo,
-    resetLeaderBoard,
     joinTelegram,
     checkTgJoined,
     followX,

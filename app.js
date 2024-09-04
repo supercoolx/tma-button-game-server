@@ -69,3 +69,75 @@ const start = async () => {
 };
 
 start();
+
+const cron = require("node-cron");
+const { sendMessageToAdmins } = require('./helper/botHelper');
+
+const User = require('./models/User'); // Update with your User model path
+const { LEADERBOARD_PRIZE } = require('./helper/constants');
+
+// Function to reset scores and record the history
+const resetWeeklyScores = async () => {
+  try {
+    //send jackpot user list
+    const jackUsers = await User.find({ jackpot: { $gt: 0 } }).select('tgId -_id').lean();
+    const userInfoList = jackUsers.map(user => `@${user.tgId} (${user.count})`);
+
+    const jMsg = 'JackPot Users: ' + userInfoList.join(', ');
+    console.log(jMsg);
+    await sendMessageToAdmins(jMsg);
+    
+    //send leaderboard user list
+    const allUsers = await User.find()
+        .sort({ score: -1 })
+        .lean();
+    let rankedUsers = [];
+    let currentRank = 1;
+
+    allUsers.forEach((user, index) => {
+        if (index > 0 && allUsers[index].score === allUsers[index - 1].score) {
+            rankedUsers.push({ ...user, rank: currentRank });
+        } else {
+            currentRank = index + 1;
+            rankedUsers.push({ ...user, rank: currentRank });
+        }
+    });
+
+    const rankThreshold = 10;
+    var rankScoreThreshold = rankedUsers.find(user => user.rank === rankThreshold)?.score;
+    if(!rankScoreThreshold) {
+      rankScoreThreshold = 0;
+    }
+
+    const topRankUsers = rankedUsers.filter(user => user.rank <= rankThreshold && user.score >= rankScoreThreshold);
+    const rankCounts = topRankUsers.reduce((acc, user) => {
+      acc[user.rank] = {
+        count: (acc[user.rank]?.count || 0) + 1,
+        score: user.score
+      }
+      return acc;
+    }, {});
+    Object.keys(rankCounts).forEach(key => {
+      const prize = getPrizePerUser(parseInt(key), parseInt(rankCounts[key].count));
+      rankCounts[key].prize = prize.toFixed(2);
+    });
+    const leaderBoardList = topRankUsers.map(user => {
+      return `@${user.tgId} rank: ${user.rank} prize: ${rankCounts[user.rank].prize})`
+    });
+    
+    const lMsg = 'LeaderBoard Users: ' + leaderBoardList.join(', ');
+    console.log(lMsg);
+    await sendMessageToAdmins(lMsg);
+
+    // Reset scores for all users
+    await User.updateMany({}, {
+      $set: { score: 0, jackpot: 0 }
+    });
+    console.log('Scores & jackpot have been reset.');
+  } catch (err) {
+    console.error('Error during weekly reset:', err);
+  }
+};
+
+// Schedule the reset to run every Monday at 00:00
+cron.schedule('0 0 * * 1', resetWeeklyScores);

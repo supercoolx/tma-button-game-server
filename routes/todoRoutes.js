@@ -7,8 +7,6 @@ const {
 
 const {
   createTodo,
-  getAllTodos,
-  resetLeaderBoard,
   joinTelegram,
   checkTgJoined,
   followX,
@@ -20,10 +18,7 @@ const {
 router
   .route('/')
   // .post([authenticateUser], createTodo)
-  .post(createTodo)
-  .get(getAllTodos);
-
-router.route('/reset').post(resetLeaderBoard);
+  .post(createTodo);
 
 router.route('/jointg').post(joinTelegram);
 router.route('/checkjointg').get(checkTgJoined);
