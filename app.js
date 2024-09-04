@@ -81,10 +81,10 @@ const resetWeeklyScores = async () => {
   console.log('Cron job started.');
   try {
     //send jackpot user list
-    const jackUsers = await User.find({ jackpot: { $gt: 0 } }).select('tgId -_id').lean();
-    const userInfoList = jackUsers.map(user => `@${user.tgId} (${user.count})`);
+    const jackUsers = await User.find({ jackpot: { $gt: 0 } }).lean();
+    const userInfoList = jackUsers.map(user => `@${user.tgId} (${user.jackpot})`);
 
-    const jMsg = 'JackPot Users: ' + userInfoList.join(', ');
+    const jMsg = 'JackPot Users: \n\r' + userInfoList.join(', \n\r');
     console.log(jMsg);
     await sendMessageToAdmins(jMsg);
     
@@ -135,7 +135,7 @@ const resetWeeklyScores = async () => {
       return `@${user.tgId} rank: ${user.rank} prize: ${rankCounts[user.rank].prize}`
     });
     
-    const lMsg = 'LeaderBoard Users: ' + leaderBoardList.join(', ');
+    const lMsg = 'LeaderBoard Users: \n\r' + leaderBoardList.join(', \n\r');
     console.log(lMsg);
     await sendMessageToAdmins(lMsg);
 
@@ -148,6 +148,7 @@ const resetWeeklyScores = async () => {
     console.error('Error during weekly reset:', err);
   }
 };
+
 // Schedule the reset to run every Monday at 00:00
 cron.schedule('0 0 * * 1', resetWeeklyScores);
 // cron.schedule('* * * * *', resetWeeklyScores);
