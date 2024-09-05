@@ -149,7 +149,7 @@ const getJackPotBoard = async (req, res) => {
   const { username } = req.params;
   const users = await User.find({ jackpot: { $gt: 0 } });
   const filteredUsers = filterUsersByUsername(users, username);
-  const remainTime = getRemainingTimeToReset();
+  const remainTime = getRemainingTimeToResetJackpot();
   
   res.status(StatusCodes.OK).json({
     total: users.length,
@@ -208,7 +208,7 @@ const getLeaderBoard = async (req, res) => {
     const myUser = rankedUsers.find(user => user.username == username);
     const myRank = myUser ? myUser.rank : null;
     const myScore = myUser ? myUser.score : null;
-    const remainTime = getRemainingTimeToReset();
+    const remainTime = getRemainingTimeToResetLeaderboard();
 
     // Log and return the results
     console.log('Top Users Count per Rank:', rankCounts);
@@ -236,10 +236,26 @@ const getPrizePerUser = (rank, count) => {
   prizeAmount /= count;
   return prizeAmount;
 }
-const getRemainingTimeToReset = () => {
+const getRemainingTimeToResetLeaderboard = () => {
   const now = new Date();
   const dayOfWeek = now.getDay();
-  const daysUntilMonday = (1 - dayOfWeek + 7) % 7; // Days until next Monday
+  const daysUntilMonday = (3 - dayOfWeek + 7) % 7; // Days until next Wednesday
+  const nextMonday = new Date(now);
+  nextMonday.setDate(now.getDate() + daysUntilMonday);
+  nextMonday.setHours(0, 0, 0, 0); // Set time to start of the day
+  
+  const remainingTime = nextMonday - now; // Time in milliseconds
+
+  console.log(`Time remaining until next reset: ${Math.ceil(remainingTime / 1000 / 60 / 60)} hours`);
+  
+  return remainingTime;
+};
+
+
+const getRemainingTimeToResetJackpot = () => {
+  const now = new Date();
+  const dayOfWeek = now.getDay();
+  const daysUntilMonday = (6 - dayOfWeek + 7) % 7; // Days until next Saturday
   const nextMonday = new Date(now);
   nextMonday.setDate(now.getDate() + daysUntilMonday);
   nextMonday.setHours(0, 0, 0, 0); // Set time to start of the day
