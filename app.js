@@ -77,8 +77,8 @@ const User = require('./models/User'); // Update with your User model path
 const { LEADERBOARD_PRIZE } = require('./helper/constants');
 
 // Function to reset scores and record the history
-const resetWeeklyScores = async () => {
-  console.log('Cron job started.');
+const resetJackPotWeeklyScores = async () => {
+  console.log('JackPot Cron job started.');
   try {
     //send jackpot user list
     const jackUsers = await User.find({ jackpot: { $gt: 0 } }).lean();
@@ -87,7 +87,14 @@ const resetWeeklyScores = async () => {
     const jMsg = 'JackPot Users: \n\r' + userInfoList.join(', \n\r');
     console.log(jMsg);
     await sendMessageToAdmins(jMsg);
-    
+    console.log('jackpot have been reset.');
+  } catch (err) {
+    console.error('Error during weekly reset:', err);
+  }
+};
+const resetLeaderBoardWeeklyScores = async () => {
+  console.log('Leaderboard Cron job started.');
+  try {
     //send leaderboard user list
     const allUsers = await User.find()
         .sort({ score: -1 })
@@ -143,14 +150,16 @@ const resetWeeklyScores = async () => {
     await User.updateMany({}, {
       $set: { score: 0, jackpot: 0 }
     });
-    console.log('Scores & jackpot have been reset.');
+    console.log('Leaderboard scores have been reset.');
   } catch (err) {
     console.error('Error during weekly reset:', err);
   }
 };
 
-// Schedule the reset to run every Monday at 00:00
-cron.schedule('0 0 * * 1', resetWeeklyScores);
-// cron.schedule('* * * * *', resetWeeklyScores);
+// Schedule the task to run every Saturday at midnight
+cron.schedule('0 0 * * 6', resetJackPotWeeklyScores);
+
+// Schedule the task to run every Wednesday at midnight
+cron.schedule('0 0 * * 3', resetLeaderBoardWeeklyScores);
 
 botStart();
