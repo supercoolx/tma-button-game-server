@@ -58,7 +58,17 @@ const joinTelegram = async (req, res) => {
 const followX = async (req, res) => {
   const { username } = req.body;
   var user = await User.findOne({username});
-  if(user && user.followx != 1) {
+  if (!user) return res.status(StatusCodes.UNAUTHORIZED).json({
+    success: false,
+    message: 'user not found'
+  });
+
+  if(user.jointg) {
+    return res.status(StatusCodes.OK).json({
+      success: false,
+      message: 'You\'ve already got bonus.'
+    });
+  } else  {
     var newBonus = user.bonus_time;
     let date = new Date();
     if(newBonus < date) {
