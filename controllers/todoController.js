@@ -44,7 +44,7 @@ const joinTelegram = async (req, res) => {
     if(newBonus < date) {
       newBonus = date;
     }
-    const newTimestamp = new Date(newBonus.getTime() + (24 * 60 * 60 * 1000));
+    const newTimestamp = new Date(newBonus.getTime() + (4 * 60 * 60 * 1000));
     user.bonus_time = newTimestamp;
     user.jointg = 1;
     await user.save();
@@ -59,6 +59,14 @@ const followX = async (req, res) => {
   const { username } = req.body;
   var user = await User.findOne({username});
   if(user && user.followx != 1) {
+    var newBonus = user.bonus_time;
+    let date = new Date();
+    if(newBonus < date) {
+      newBonus = date;
+    }
+    const newTimestamp = new Date(newBonus.getTime() + (4 * 60 * 60 * 1000));
+    user.bonus_time = newTimestamp;
+
     user.followx = 1;
     await user.save();
   }
