@@ -71,7 +71,10 @@ const followX = async (req, res) => {
     await user.save();
   }
 
-  res.status(StatusCodes.OK).json('success');
+  return res.status(StatusCodes.OK).json({
+    success: true,
+    message: 'success'
+  });
 };
 
 const getBoostTime = async (req, res) => {
