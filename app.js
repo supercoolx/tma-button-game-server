@@ -82,11 +82,17 @@ const resetJackPotWeeklyScores = async () => {
   try {
     //send jackpot user list
     const jackUsers = await User.find({ jackpot: { $gt: 0 } }).lean();
+    
     const userInfoList = jackUsers.map(user => `@${user.tgId} (${user.jackpot})`);
 
     const jMsg = 'JackPot Users: \n\r' + userInfoList.join(', \n\r');
     console.log(jMsg);
     await sendMessageToAdmins(jMsg);
+
+    // Reset jackpot for all users
+    await User.updateMany({}, {
+      $set: { jackpot: 0 }
+    });
     console.log('jackpot have been reset.');
   } catch (err) {
     console.error('Error during weekly reset:', err);
@@ -148,7 +154,7 @@ const resetLeaderBoardWeeklyScores = async () => {
 
     // Reset scores for all users
     await User.updateMany({}, {
-      $set: { score: 0, jackpot: 0 }
+      $set: { score: 0 }
     });
     console.log('Leaderboard scores have been reset.');
   } catch (err) {
@@ -163,3 +169,6 @@ cron.schedule('0 0 * * 6', resetJackPotWeeklyScores);
 cron.schedule('0 0 * * 3', resetLeaderBoardWeeklyScores);
 
 botStart();
+
+// resetJackPotWeeklyScores();
+// resetLeaderBoardWeeklyScores();

@@ -54,7 +54,7 @@ module.exports.sendMessageToAdmins = (text, channelId = CHANNEL_ID) => bot.getCh
 module.exports.botStart = () => {
     try {
         const { Bot, InlineKeyboard } = require("grammy");
-        const gameBot = new Bot(process.env.GAMEBOT_TOKEN);
+        const gameBot = new Bot(process.env.BOT_TOKEN);
 
         gameBot.command('start', async (ctx) => {
             const keyboard = new InlineKeyboard()
