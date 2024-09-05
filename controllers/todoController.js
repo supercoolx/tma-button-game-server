@@ -116,7 +116,7 @@ const createTodo = async (req, res) => {
     await user.save();
   }
   
-  var nHeartBeatPercent = 0.03, nJackPotPercent = 0.5;
+  var nHeartBeatPercent = 0.01, nJackPotPercent = 0.01;
   if(user.bonus_time > new Date()) {
     nHeartBeatPercent *= 2;
   }
