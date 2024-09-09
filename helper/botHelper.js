@@ -58,7 +58,7 @@ module.exports.botStart = () => {
 
         gameBot.command('start', async (ctx) => {
             const keyboard = new InlineKeyboard()
-                .webApp('Play 🔘', 'https://clickminiapp-server.onrender.com/')
+                .webApp('Play 🔘', 'https://pocketbotdev9.com/')
                 .row()
                 .url('Join channel', 'https://t.me/thebuttoncoin')
 
