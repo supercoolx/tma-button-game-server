@@ -71,7 +71,7 @@ const start = async () => {
 start();
 
 const cron = require("node-cron");
-const { sendMessageToAdmins, botStart } = require('./helper/botHelper');
+const { sendMessageToAdmins } = require('./helper/botHelper');
 
 const User = require('./models/User'); // Update with your User model path
 const { LEADERBOARD_PRIZE } = require('./helper/constants');
@@ -167,8 +167,6 @@ cron.schedule('0 0 * * 6', resetJackPotWeeklyScores);
 
 // Schedule the task to run every Wednesday at midnight
 cron.schedule('0 0 * * 3', resetLeaderBoardWeeklyScores);
-
-botStart();
 
 // resetJackPotWeeklyScores();
 // resetLeaderBoardWeeklyScores();
