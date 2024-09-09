@@ -63,7 +63,7 @@ const followX = async (req, res) => {
     message: 'user not found'
   });
 
-  if(user.jointg) {
+  if(user.followx) {
     return res.status(StatusCodes.OK).json({
       success: false,
       message: 'You\'ve already got bonus.'

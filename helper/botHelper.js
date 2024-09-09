@@ -1,4 +1,7 @@
 require('dotenv').config();
+
+const { Bot, InlineKeyboard } = require("grammy");
+
 const TelegramBot = require('node-telegram-bot-api');
 
 const bot = new TelegramBot(process.env.BOT_TOKEN); // tracker bot @button_coin_tracker_bot
@@ -53,7 +56,6 @@ module.exports.sendMessageToAdmins = (text, channelId = CHANNEL_ID) => bot.getCh
 
 module.exports.botStart = () => {
     try {
-        const { Bot, InlineKeyboard } = require("grammy");
         const gameBot = new Bot(process.env.BOT_TOKEN);
 
         gameBot.command('start', async (ctx) => {
