@@ -102,7 +102,7 @@ const resetLeaderBoardWeeklyScores = async () => {
   console.log('Leaderboard Cron job started.');
   try {
     //send leaderboard user list
-    const allUsers = await User.find()
+    const allUsers = await User.find({ score: { $gt: 0 } })
         .sort({ score: -1 })
         .lean();
     let rankedUsers = [];

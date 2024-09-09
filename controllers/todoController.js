@@ -172,7 +172,7 @@ const getLeaderBoard = async (req, res) => {
   const { username } = req.params;
   try {
     // Find all users sorted by score in descending order
-    const allUsers = await User.find()
+    const allUsers = await User.find({ score: { $gt: 0 } })
         .sort({ score: -1 })
         .lean(); // Use lean() to get plain JavaScript objects
     // Calculate ranks for all users
