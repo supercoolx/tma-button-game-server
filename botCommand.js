@@ -1,8 +1,13 @@
 require('dotenv').config();
+// database
+const connectDB = require('./db/connect');
+const User = require('./models/User');
+const { sendMessageToAdmins } = require('./helper/botHelper');
 
-const botStart = () => {
+
+const botStart = async () => {
     try {
-        
+        await connectDB(process.env.MONGO_URL);
         const { Bot, InlineKeyboard } = require("grammy");
         const gameBot = new Bot(process.env.BOT_TOKEN);
 
@@ -19,6 +24,22 @@ const botStart = () => {
                     reply_markup: keyboard,
                 }
             );
+        });
+        gameBot.command('users', async (ctx) => {
+            console.log("/users command start");
+            try {
+                // Get total user count
+                const totalUsers = await User.countDocuments();
+                // Get the count of users with score greater than 0
+                const usersWithScore = await User.countDocuments({ score: { $gt: 0 } });
+
+                const jMsg = `Total users: ${totalUsers}\n\r This week users: ${usersWithScore}`;
+                console.log(jMsg);
+                await sendMessageToAdmins(jMsg);
+                console.log('Send users count message to admins.');
+            } catch (err) {
+                console.error('Error /users command:', err);
+            }
         });
         
         (async () => {

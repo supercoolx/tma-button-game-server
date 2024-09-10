@@ -73,7 +73,7 @@ start();
 const cron = require("node-cron");
 const { sendMessageToAdmins } = require('./helper/botHelper');
 
-const User = require('./models/User'); // Update with your User model path
+const User = require('./models/User');
 const { LEADERBOARD_PRIZE } = require('./helper/constants');
 
 // Function to reset scores and record the history
