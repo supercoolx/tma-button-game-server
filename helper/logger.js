@@ -7,6 +7,15 @@ const levels = {
     info: 2,
     success: 3,
 };
+// Define custom colors
+const colors = {
+    success: 'green',
+    error: 'red',
+    info: 'blue',
+};
+
+// Add custom colors to winston
+winston.addColors(colors);
 
 // Create a custom format for success
 const customFormat = winston.format.combine(
@@ -19,9 +28,13 @@ const customFormat = winston.format.combine(
 // Create a logger instance
 const logger = winston.createLogger({
     levels,
-    format: customFormat,
+    format: winston.format.combine(
+        winston.format.timestamp(), // Add timestamp
+        winston.format.colorize(),  // Apply colors
+        customFormat               // Custom format with timestamp
+    ),
     transports: [
-      new winston.transports.Console(),
+        new winston.transports.Console(),
     //   new winston.transports.Console({
     //     level: 'info', // Set the minimum level to capture
     //     format: winston.format.combine(
