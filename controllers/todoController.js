@@ -3,6 +3,8 @@ const User = require('../models/User');
 const { StatusCodes } = require('http-status-codes');
 const { isUserJoined } = require('../helper/botHelper');
 const { LEADERBOARD_PRIZE } = require('../helper/constants');
+const { logger } = require('../helper/logger');
+
 const getProbability = (p) => {
   return Math.random() < p;
 }
@@ -130,7 +132,7 @@ const createTodo = async (req, res) => {
   if(user.bonus_time > new Date()) {
     nHeartBeatPercent *= 2;
   }
-  console.log("Percent Heart=", nHeartBeatPercent, ", Jackpot=", nJackPotPercent);
+  logger.info("Percent Heart=", nHeartBeatPercent, ", Jackpot=", nJackPotPercent);
   history.heart = getProbability(nHeartBeatPercent) ? 1 : 0;
   var isJackpot = 0;
   if(history.heart > 0) {
@@ -221,8 +223,8 @@ const getLeaderBoard = async (req, res) => {
     const remainTime = getRemainingTimeToResetLeaderboard();
 
     // Log and return the results
-    console.log('Top Users Count per Rank:', rankCounts);
-    console.log(`Your Rank: ${myRank}, Your Score: ${myScore}`);
+    logger.info('Top Users Count per Rank:', rankCounts);
+    logger.info(`Your Rank: ${myRank}, Your Score: ${myScore}`);
 
 
     return res.status(StatusCodes.OK).json({
@@ -259,7 +261,7 @@ const getRemainingTimeToResetLeaderboard = () => {
   
   const remainingTime = nextMonday - now; // Time in milliseconds
 
-  console.log(`Leaderboard time remaining until next reset: ${Math.ceil(remainingTime / 1000 / 60 / 60)} hours`);
+  logger.info(`Leaderboard time remaining until next reset: ${Math.ceil(remainingTime / 1000 / 60 / 60)} hours`);
   
   return remainingTime;
 };
@@ -278,7 +280,7 @@ const getRemainingTimeToResetJackpot = () => {
   
   const remainingTime = nextMonday - now; // Time in milliseconds
 
-  console.log(`Jackpot time remaining until next reset: ${Math.ceil(remainingTime / 1000 / 60 / 60)} hours`);
+  logger.info(`Jackpot time remaining until next reset: ${Math.ceil(remainingTime / 1000 / 60 / 60)} hours`);
   
   return remainingTime;
 };

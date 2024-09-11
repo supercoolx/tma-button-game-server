@@ -15,6 +15,8 @@ const xss = require('xss-clean');
 const cors = require('cors');
 const mongoSanitize = require('express-mongo-sanitize');
 
+const { logger } = require('./helper/logger');
+
 // database
 const connectDB = require('./db/connect');
 
@@ -61,10 +63,10 @@ const start = async () => {
   try {
     await connectDB(process.env.MONGO_URL);
     app.listen(port, () =>
-      console.log(`Server is listening on port ${port}...`)
+      logger.info(`Server is listening on port ${port}...`)
     );
   } catch (error) {
-    console.log(error);
+    logger.info(error);
   }
 };
 
@@ -78,7 +80,7 @@ const { LEADERBOARD_PRIZE } = require('./helper/constants');
 
 // Function to reset scores and record the history
 const resetJackPotWeeklyScores = async () => {
-  console.log('JackPot Cron job started.');
+  logger.info('JackPot Cron job started.');
   try {
     //send jackpot user list
     const jackUsers = await User.find({ jackpot: { $gt: 0 } }).lean();
@@ -86,20 +88,20 @@ const resetJackPotWeeklyScores = async () => {
     const userInfoList = jackUsers.map(user => `@${user.tgId} (${user.jackpot})`);
 
     const jMsg = 'JackPot Users: \n\r' + userInfoList.join(', \n\r');
-    console.log(jMsg);
+    logger.info(jMsg);
     await sendMessageToAdmins(jMsg);
 
     // Reset jackpot for all users
     await User.updateMany({}, {
       $set: { jackpot: 0 }
     });
-    console.log('jackpot have been reset.');
+    logger.info('jackpot have been reset.');
   } catch (err) {
     console.error('Error during weekly reset:', err);
   }
 };
 const resetLeaderBoardWeeklyScores = async () => {
-  console.log('Leaderboard Cron job started.');
+  logger.info('Leaderboard Cron job started.');
   try {
     //send leaderboard user list
     const allUsers = await User.find({ score: { $gt: 0 } })
@@ -149,14 +151,14 @@ const resetLeaderBoardWeeklyScores = async () => {
     });
     
     const lMsg = 'LeaderBoard Users: \n\r' + leaderBoardList.join(', \n\r');
-    console.log(lMsg);
+    logger.info(lMsg);
     await sendMessageToAdmins(lMsg);
 
     // Reset scores for all users
     await User.updateMany({}, {
       $set: { score: 0 }
     });
-    console.log('Leaderboard scores have been reset.');
+    logger.info('Leaderboard scores have been reset.');
   } catch (err) {
     console.error('Error during weekly reset:', err);
   }

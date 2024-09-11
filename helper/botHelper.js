@@ -1,5 +1,6 @@
 require('dotenv').config();
 
+const { logger } = require('../helper/logger');
 const TelegramBot = require('node-telegram-bot-api');
 
 const bot = new TelegramBot(process.env.BOT_TOKEN); // tracker bot @button_coin_tracker_bot
@@ -11,10 +12,10 @@ const CHANNEL_ID = '-1002154994416'; //button
 module.exports.isUserJoined = (userId, channelId = CHANNEL_ID) => bot.getChatMember(channelId, userId)
     .then((chatMember) => {
         if (chatMember.status === 'member' || chatMember.status === 'creator' || chatMember.status === 'administrator') {
-            console.log(`User#${userId} is a ${chatMember.status} of the channel.`,);
+            logger.info(`User#${userId} is a ${chatMember.status} of the channel.`,);
             return true;
         } else {
-            console.log(`User#${userId} is not a member of the channel.`);
+            logger.info(`User#${userId} is not a member of the channel.`);
             return false;
         }
     })
@@ -26,7 +27,7 @@ module.exports.isUserJoined = (userId, channelId = CHANNEL_ID) => bot.getChatMem
 
 // bot.sendMessage(7449972885, "This is the test.")
 //     .then((response) => {
-//         console.log('Message sent successfully:', response);
+//         logger.info('Message sent successfully:', response);
 //     })
 //     .catch((error) => {
 //         console.error('Error sending message:', error);
@@ -38,14 +39,14 @@ module.exports.sendMessageToAdmins = (text, channelId = CHANNEL_ID) => bot.getCh
             if (admin.user.is_bot) return Promise.resolve();
             return bot.sendMessage(admin.user.id, text)
                 .then((response) => {
-                    console.log('Message sent successfully:', response.text);
+                    logger.info('Message sent successfully:', response.text);
                 })
                 .catch((error) => {
                     console.error('Error sending message:', error.message);
                 });
         });
         return Promise.all(promises).then(() => {
-            console.log('All message sent.');
+            logger.info('All message sent.');
         });
     })
     .catch(error => {

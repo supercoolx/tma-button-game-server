@@ -2,6 +2,7 @@ const User = require('../models/User');
 const Token = require('../models/Token');
 const { StatusCodes } = require('http-status-codes');
 const CustomError = require('../errors');
+const { logger } = require('../helper/logger');
 const {
   attachCookiesToResponse,
   createTokenUser,
@@ -10,7 +11,7 @@ const crypto = require('crypto');
 
 const login = async (req, res) => {
   const { username, fullname, invitor, tgId } = req.body;
-  console.log("login=", username, ", ", fullname, ", ", invitor);
+  logger.info("login=", username, ", ", fullname, ", ", invitor);
 
   // const { username, name, password } = req.body;
   // const username = "button_dev";
@@ -27,7 +28,7 @@ const login = async (req, res) => {
     if(invitor != '') {
       var inviteUser = await User.findOne({username: invitor});
       if(inviteUser) {
-        console.log("bounus time addes");
+        logger.info("bounus time addes");
         var newBonus = inviteUser.bonus_time;
         let date = new Date();
         if(newBonus < date) {

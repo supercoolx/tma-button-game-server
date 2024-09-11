@@ -3,7 +3,7 @@ require('dotenv').config();
 const connectDB = require('./db/connect');
 const User = require('./models/User');
 const { sendMessageToAdmins } = require('./helper/botHelper');
-
+const { logger } = require('./helper/logger');
 
 const botStart = async () => {
     try {
@@ -26,7 +26,7 @@ const botStart = async () => {
             );
         });
         gameBot.command('users', async (ctx) => {
-            console.log("/users command start");
+            logger.info("/users command start");
             try {
                 // Get total user count
                 const totalUsers = await User.countDocuments();
@@ -34,9 +34,9 @@ const botStart = async () => {
                 const usersWithScore = await User.countDocuments({ score: { $gt: 0 } });
 
                 const jMsg = `Total users: ${totalUsers}\n\r This week users: ${usersWithScore}`;
-                console.log(jMsg);
+                logger.info(jMsg);
                 await sendMessageToAdmins(jMsg);
-                console.log('Send users count message to admins.');
+                logger.info('Send users count message to admins.');
             } catch (err) {
                 console.error('Error /users command:', err);
             }
@@ -45,10 +45,10 @@ const botStart = async () => {
         (async () => {
             await gameBot.api.deleteWebhook();
             gameBot.start();
-            console.log('Game Command Bot started!');
+            logger.info('Game Command Bot started!');
         })();
     } catch(err) {
-        console.log('Game Command bot error:', err);
+        logger.info('Game Command bot error:', err);
     }
 }
 
