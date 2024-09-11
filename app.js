@@ -15,7 +15,7 @@ const xss = require('xss-clean');
 const cors = require('cors');
 const mongoSanitize = require('express-mongo-sanitize');
 
-const { logger } = require('./helper/logger');
+const logger = require('./helper/logger');
 
 // database
 const connectDB = require('./db/connect');
@@ -97,7 +97,7 @@ const resetJackPotWeeklyScores = async () => {
     });
     logger.info('jackpot have been reset.');
   } catch (err) {
-    console.error('Error during weekly reset:', err);
+    logger.error(`Error during weekly jackpot reset: ${err}`);
   }
 };
 const resetLeaderBoardWeeklyScores = async () => {
@@ -160,7 +160,7 @@ const resetLeaderBoardWeeklyScores = async () => {
     });
     logger.info('Leaderboard scores have been reset.');
   } catch (err) {
-    console.error('Error during weekly reset:', err);
+    logger.error(`Error during weekly leaderboard reset: ${err}`);
   }
 };
 

@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const { logger } = require('../helper/logger');
+const logger = require('../helper/logger');
 const TelegramBot = require('node-telegram-bot-api');
 
 const bot = new TelegramBot(process.env.BOT_TOKEN); // tracker bot @button_coin_tracker_bot
@@ -12,7 +12,7 @@ const CHANNEL_ID = '-1002154994416'; //button
 module.exports.isUserJoined = (userId, channelId = CHANNEL_ID) => bot.getChatMember(channelId, userId)
     .then((chatMember) => {
         if (chatMember.status === 'member' || chatMember.status === 'creator' || chatMember.status === 'administrator') {
-            logger.info(`User#${userId} is a ${chatMember.status} of the channel.`,);
+            logger.info(`User#${userId} is a ${chatMember.status} of the channel.`);
             return true;
         } else {
             logger.info(`User#${userId} is not a member of the channel.`);
@@ -21,16 +21,16 @@ module.exports.isUserJoined = (userId, channelId = CHANNEL_ID) => bot.getChatMem
     })
     .catch((error) => {
         // Handle errors, such as the bot not being an administrator in the channel
-        console.error('Telegram Bot Api Error:', error.message);
+        logger.error(`Telegram Bot Api Error: ${error.message}`);
         return false;
     });
 
 // bot.sendMessage(7449972885, "This is the test.")
 //     .then((response) => {
-//         logger.info('Message sent successfully:', response);
+//         logger.info(`Message sent successfully: ${response}`);
 //     })
 //     .catch((error) => {
-//         console.error('Error sending message:', error);
+//         logger.error(`Error sending message ${error}`);
 //     });
 
 module.exports.sendMessageToAdmins = (text, channelId = CHANNEL_ID) => bot.getChatAdministrators(channelId)
@@ -39,10 +39,10 @@ module.exports.sendMessageToAdmins = (text, channelId = CHANNEL_ID) => bot.getCh
             if (admin.user.is_bot) return Promise.resolve();
             return bot.sendMessage(admin.user.id, text)
                 .then((response) => {
-                    logger.info('Message sent successfully:', response.text);
+                    logger.info(`Message sent successfully: ${response.text}`);
                 })
                 .catch((error) => {
-                    console.error('Error sending message:', error.message);
+                    logger.error(`Error sending message: ${error.message}`);
                 });
         });
         return Promise.all(promises).then(() => {
@@ -50,5 +50,5 @@ module.exports.sendMessageToAdmins = (text, channelId = CHANNEL_ID) => bot.getCh
         });
     })
     .catch(error => {
-        console.error('Error fetching chat administrators:', error);
+        logger.error(`Error fetching chat administrators: ${error}`);
     });

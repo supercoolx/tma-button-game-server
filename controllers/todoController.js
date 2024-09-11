@@ -3,7 +3,7 @@ const User = require('../models/User');
 const { StatusCodes } = require('http-status-codes');
 const { isUserJoined } = require('../helper/botHelper');
 const { LEADERBOARD_PRIZE } = require('../helper/constants');
-const { logger } = require('../helper/logger');
+const logger = require('../helper/logger');
 
 const getProbability = (p) => {
   return Math.random() < p;
@@ -132,7 +132,7 @@ const createTodo = async (req, res) => {
   if(user.bonus_time > new Date()) {
     nHeartBeatPercent *= 2;
   }
-  logger.info("Percent Heart=", nHeartBeatPercent, ", Jackpot=", nJackPotPercent);
+  logger.info(`Percent Heart=${nHeartBeatPercent}, Jackpot=${nJackPotPercent}`);
   history.heart = getProbability(nHeartBeatPercent) ? 1 : 0;
   var isJackpot = 0;
   if(history.heart > 0) {
@@ -234,7 +234,7 @@ const getLeaderBoard = async (req, res) => {
       remainTime,
     });
   } catch (err) {
-      console.error('Error fetching users:', err);
+      logger.error(`Error fetching users: ${err}`);
       return res.status(StatusCodes.OK).json('failed');
   }
 };

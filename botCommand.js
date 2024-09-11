@@ -3,7 +3,7 @@ require('dotenv').config();
 const connectDB = require('./db/connect');
 const User = require('./models/User');
 const { sendMessageToAdmins } = require('./helper/botHelper');
-const { logger } = require('./helper/logger');
+const logger = require('./helper/logger');
 
 const botStart = async () => {
     try {
@@ -38,7 +38,7 @@ const botStart = async () => {
                 await sendMessageToAdmins(jMsg);
                 logger.info('Send users count message to admins.');
             } catch (err) {
-                console.error('Error /users command:', err);
+                logger.error(`Error /users command: ${err}`);
             }
         });
         
@@ -48,7 +48,7 @@ const botStart = async () => {
             logger.info('Game Command Bot started!');
         })();
     } catch(err) {
-        logger.info('Game Command bot error:', err);
+        logger.info(`Game Command bot error: ${err}`);
     }
 }
 
