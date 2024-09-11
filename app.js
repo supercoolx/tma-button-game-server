@@ -66,7 +66,7 @@ const start = async () => {
       logger.info(`Server is listening on port ${port}...`)
     );
   } catch (error) {
-    logger.info(error);
+    logger.info(['Server error:', error]);
   }
 };
 
@@ -97,7 +97,7 @@ const resetJackPotWeeklyScores = async () => {
     });
     logger.info('jackpot have been reset.');
   } catch (err) {
-    logger.error(`Error during weekly jackpot reset: ${err}`);
+    logger.error(['Error during weekly jackpot reset:', err]);
   }
 };
 const resetLeaderBoardWeeklyScores = async () => {
@@ -160,7 +160,7 @@ const resetLeaderBoardWeeklyScores = async () => {
     });
     logger.info('Leaderboard scores have been reset.');
   } catch (err) {
-    logger.error(`Error during weekly leaderboard reset: ${err}`);
+    logger.error(['Error during weekly leaderboard reset:', err]);
   }
 };
 

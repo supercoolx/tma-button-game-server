@@ -38,7 +38,7 @@ const botStart = async () => {
                 await sendMessageToAdmins(jMsg);
                 logger.info('Send users count message to admins.');
             } catch (err) {
-                logger.error(`Error /users command: ${err}`);
+                logger.error(['Error /users command:', err]);
             }
         });
         
@@ -48,7 +48,7 @@ const botStart = async () => {
             logger.info('Game Command Bot started!');
         })();
     } catch(err) {
-        logger.info(`Game Command bot error: ${err}`);
+        logger.error(['Game Command bot error:', err]);
     }
 }
 

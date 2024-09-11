@@ -223,7 +223,7 @@ const getLeaderBoard = async (req, res) => {
     const remainTime = getRemainingTimeToResetLeaderboard();
 
     // Log and return the results
-    logger.info('Top Users Count per Rank:', rankCounts);
+    logger.info(['Top Users Count per Rank:', rankCounts]);
     logger.info(`Your Rank: ${myRank}, Your Score: ${myScore}`);
 
 
@@ -234,7 +234,7 @@ const getLeaderBoard = async (req, res) => {
       remainTime,
     });
   } catch (err) {
-      logger.error(`Error fetching users: ${err}`);
+      logger.error(['Error fetching users:', err]);
       return res.status(StatusCodes.OK).json('failed');
   }
 };
