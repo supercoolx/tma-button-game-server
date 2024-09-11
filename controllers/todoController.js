@@ -132,7 +132,7 @@ const createTodo = async (req, res) => {
   if(user.bonus_time > new Date()) {
     nHeartBeatPercent *= 2;
   }
-  logger.info(`Percent Heart=${nHeartBeatPercent}, Jackpot=${nJackPotPercent}`);
+  logger.info(`user=${user.tgId} Percent Heart=${nHeartBeatPercent}, Jackpot=${nJackPotPercent}`);
   history.heart = getProbability(nHeartBeatPercent) ? 1 : 0;
   var isJackpot = 0;
   if(history.heart > 0) {
