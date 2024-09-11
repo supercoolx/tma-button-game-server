@@ -249,14 +249,17 @@ const getPrizePerUser = (rank, count) => {
 const getRemainingTimeToResetLeaderboard = () => {
   const now = new Date();
   const dayOfWeek = now.getDay();
-  const daysUntilMonday = (3 - dayOfWeek + 7) % 7; // Days until next Wednesday
+  var daysUntilMonday = (3 - dayOfWeek + 7) % 7; // Days until next Wednesday
+  if(daysUntilMonday == 0) {
+    daysUntilMonday += 7;
+  }
   const nextMonday = new Date(now);
   nextMonday.setDate(now.getDate() + daysUntilMonday);
   nextMonday.setHours(0, 0, 0, 0); // Set time to start of the day
   
   const remainingTime = nextMonday - now; // Time in milliseconds
 
-  console.log(`Time remaining until next reset: ${Math.ceil(remainingTime / 1000 / 60 / 60)} hours`);
+  console.log(`Leaderboard time remaining until next reset: ${Math.ceil(remainingTime / 1000 / 60 / 60)} hours`);
   
   return remainingTime;
 };
@@ -265,14 +268,17 @@ const getRemainingTimeToResetLeaderboard = () => {
 const getRemainingTimeToResetJackpot = () => {
   const now = new Date();
   const dayOfWeek = now.getDay();
-  const daysUntilMonday = (6 - dayOfWeek + 7) % 7; // Days until next Saturday
+  var daysUntilMonday = (6 - dayOfWeek + 7) % 7; // Days until next Saturday
+  if(daysUntilMonday == 0) {
+    daysUntilMonday += 7;
+  }
   const nextMonday = new Date(now);
   nextMonday.setDate(now.getDate() + daysUntilMonday);
   nextMonday.setHours(0, 0, 0, 0); // Set time to start of the day
   
   const remainingTime = nextMonday - now; // Time in milliseconds
 
-  console.log(`Time remaining until next reset: ${Math.ceil(remainingTime / 1000 / 60 / 60)} hours`);
+  console.log(`Jackpot time remaining until next reset: ${Math.ceil(remainingTime / 1000 / 60 / 60)} hours`);
   
   return remainingTime;
 };
